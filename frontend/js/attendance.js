@@ -37,10 +37,11 @@ async function renderDailyAttendance() {
 async function fetchDailyAttendance() {
   const date = document.getElementById('daily-date').value;
   document.getElementById('daily-table').innerHTML = 'Loading...';
-  const res = await fetch(`http://localhost:3000/api/attendance/daily?date=${date}`);
+  const res = await fetch(`/api/attendance/daily?date=${date}`); // <-- FIXED HERE
   const data = await res.json();
   renderDailyTable(data);
 }
+
 
 function renderDailyTable(data) {
   if (!data || data.length === 0) {
@@ -101,10 +102,11 @@ async function fetchMonthlyAttendance() {
   const month = document.getElementById('monthly-month').value;
   const year = document.getElementById('monthly-year').value;
   document.getElementById('monthly-table').innerHTML = 'Loading...';
-  const res = await fetch(`http://localhost:3000/api/attendance/monthly?month=${month}&year=${year}`);
+  const res = await fetch(`/api/attendance/monthly?month=${month}&year=${year}`); // <-- FIXED HERE
   const data = await res.json();
   renderMonthlyTable(data);
 }
+
 
 function renderMonthlyTable(data) {
   if (!data || data.length === 0) {

@@ -40,7 +40,8 @@ updateDateTime();
 
 // Status tile
 async function checkDbStatus() {
-  const res = await fetch('http://localhost:3000/api/status');
+  const res = await fetch('/api/status');
+
   const data = await res.json();
   document.getElementById('status-tiles').innerHTML = `
     <div class="status-tile ${data.dbConnected ? 'active' : 'inactive'}">
