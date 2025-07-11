@@ -89,10 +89,11 @@ function showStockAlert() {
 
 async function fetchInventory() {
   document.getElementById('inventory-table').innerHTML = 'Loading...';
-  const res = await fetch('http://localhost:3000/api/inventory');
+  const res = await fetch('/api/inventory'); // <-- FIXED HERE
   inventoryData = await res.json();
   renderInventoryControls();
   renderInventoryTable();
 }
+
 
 fetchInventory();
