@@ -1,0 +1,319 @@
+/* General */
+body {
+  background: #f5f5f5;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+}
+
+/* AppBar (Dashboard) */
+.appbar {
+  background: #673ab7;
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(80,0,80,0.07);
+}
+.appbar-title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  letter-spacing: 1.2px;
+  margin: 0 auto;
+  text-align: center;
+  flex: 1;
+}
+.logout-btn {
+  background: #e53935;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 10px 22px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  width: auto;
+  min-width: 0;
+  max-width: 220px;
+  box-sizing: border-box;
+  margin-left: auto;
+}
+.logout-btn:hover {
+  background: #b71c1c;
+}
+
+/* Dashboard Layout */
+.dashboard-content {
+  max-width: 900px;
+  margin: 36px auto 0 auto;
+  padding: 0 20px;
+}
+.dashboard-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  justify-content: center;
+  margin-bottom: 44px;
+}
+.dashboard-btn {
+  width: 180px;
+  height: 150px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(80,0,80,0.09);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.dashboard-btn:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 8px 32px rgba(80,0,80,0.14);
+}
+.dashboard-btn-icon {
+  font-size: 3.8rem;
+  margin-bottom: 14px;
+}
+.dashboard-btn-label {
+  font-size: 1.18rem;
+  font-weight: 600;
+  letter-spacing: 1.1px;
+}
+.dashboard-datetime {
+  text-align: center;
+  font-size: 1.3rem;
+  color: #4B2265;
+  font-weight: 600;
+  margin-bottom: 36px;
+  letter-spacing: 1.1px;
+}
+.dashboard-status {
+  max-width: 500px;
+  margin: 0 auto;
+}
+.status-tile {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: 1.5px solid #b8a1d9;
+  background: #f3f3f3;
+  box-shadow: 0 2px 10px rgba(80,0,80,0.06);
+}
+.status-tile.active {
+  border-color: #4CAF50;
+  background: #e8f5e9;
+}
+.status-tile.inactive {
+  border-color: #d32f2f;
+  background: #ffebee;
+}
+.status-icon {
+  font-size: 2.2rem;
+  color: #4CAF50;
+}
+.status-tile.inactive .status-icon {
+  color: #d32f2f;
+}
+.status-label {
+  font-weight: 600;
+  font-size: 1.07rem;
+  color: #4B2265;
+}
+.status-value {
+  font-weight: bold;
+  font-size: 1.07rem;
+  color: #388e3c;
+}
+.status-tile.inactive .status-value {
+  color: #d32f2f;
+}
+
+/* Login Styles */
+.login-container {
+  max-width: 400px;
+  margin: 60px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(80,0,80,0.08);
+  padding: 32px 28px;
+  text-align: center;
+}
+.logo {
+  width: 70%;
+  max-width: 240px;
+  margin-bottom: 32px;
+}
+h2 {
+  color: #4B2265;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 28px;
+  letter-spacing: 1.1px;
+}
+.form-group {
+  margin-bottom: 22px;
+  text-align: left;
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  color: #4B2265;
+  font-weight: 600;
+}
+input[type="number"], input[type="text"], input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #b8a1d9;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: #fafaff;
+  margin-bottom: 4px;
+}
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background: #4B2265;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:disabled {
+  background: #b8a1d9;
+  cursor: not-allowed;
+}
+.close-btn {
+  background: #fff;
+  color: #4B2265;
+  border: 2px solid #4B2265;
+  margin-bottom: 0;
+}
+.error {
+  color: #d32f2f;
+  font-size: 0.95rem;
+  min-height: 18px;
+}
+.loading {
+  margin-top: 12px;
+  color: #4B2265;
+  font-weight: bold;
+}
+
+/* Table Styles (for attendance, report, inventory) */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background: #fff;
+  margin: 18px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(80,0,80,0.07);
+}
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+}
+th {
+  background: #ede7f6;
+  color: #4B2265;
+  font-weight: bold;
+  font-size: 1.07rem;
+}
+tr:nth-child(even) {
+  background: #f6f2fa;
+}
+tr:hover {
+  background: #e1bee7;
+}
+
+/* Tab Buttons (for attendance/report) */
+.tab-buttons {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 18px 0;
+  gap: 16px;
+}
+.tab-buttons button {
+  width: auto;
+  padding: 12px 32px;
+  border-radius: 10px 10px 0 0;
+  background: #ede7f6;
+  color: #4B2265;
+  border: none;
+  font-size: 1.07rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 0;
+}
+.tab-buttons .tab-active {
+  background: #673ab7;
+  color: #fff;
+}
+
+/* Category Buttons (Inventory) */
+.cat-btn {
+  background: #ede7f6;
+  color: #4B2265;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 20px;
+  margin-right: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cat-active, .cat-btn:active {
+  background: #673ab7;
+  color: #fff;
+}
+
+/* Attendance controls centering */
+.center-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.center-controls label,
+.center-controls select,
+.center-controls input[type="date"],
+.center-controls button {
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Center "No data available" */
+.no-data {
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  margin: 24px 0;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .dashboard-content { padding: 0 4vw; }
+  .dashboard-buttons { flex-direction: column; align-items: center; }
+  .dashboard-btn { width: 95vw; max-width: 320px; }
+  .appbar { flex-direction: column; gap: 12px; padding: 16px 6vw; }
+}
+
