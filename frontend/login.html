@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>ICRU Login</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      display: block !important;
+      justify-content: unset !important;
+      align-items: unset !important;
+      flex-direction: unset !important;
+    }
+    @media (max-width: 900px) {
+      .login-container {
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      .logo {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin-bottom: 16px !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="login-container">
-<img src="assets/nexea.png" class="logo" alt="NEXEA Logo">
+    <img src="assets/nexea.png" class="logo" alt="NEXEA Logo" />
     <h2>SIGN IN YOUR CREDENTIALS TO ACCESS NEXÉA SYSTEM</h2>
     <div class="form-group">
       <label for="signin-id">Sign-in Code (ID)</label>
-      <input type="number" id="signin-id" placeholder="Enter your sign-in code">
+      <input type="number" id="signin-id" placeholder="Enter your sign-in code" />
       <div id="error-text" class="error"></div>
     </div>
     <button id="login-btn">Login</button>
     <button id="close-btn" class="close-btn">Close</button>
     <div id="loading" class="loading" style="display:none;">Loading...</div>
   </div>
-  <script src="js/login.js"></script>
 </body>
 </html>
