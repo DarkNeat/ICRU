@@ -3,6 +3,8 @@ body {
   background: #f5f5f5;
   font-family: 'Segoe UI', Arial, sans-serif;
   margin: 0;
+  min-height: 100vh; /* Ensure full viewport height */
+  color: #4B2265; /* Consistent text color */
 }
 
 /* AppBar (Dashboard) */
@@ -13,7 +15,9 @@ body {
   display: flex;
   align-items: center;
   position: relative;
-  box-shadow: 0 4px 16px rgba(80,0,80,0.07);
+  box-shadow: 0 4px 16px rgba(80, 0, 80, 0.07);
+  flex-wrap: wrap; /* Wrap on small screens */
+  gap: 12px;
 }
 .appbar-title {
   font-size: 1.7rem;
@@ -21,7 +25,7 @@ body {
   letter-spacing: 1.2px;
   margin: 0 auto;
   text-align: center;
-  flex: 1;
+  flex: 1 1 100%; /* Full width on small screens */
 }
 .logout-btn {
   background: #e53935;
@@ -43,8 +47,10 @@ body {
   box-sizing: border-box;
   margin-left: auto;
 }
-.logout-btn:hover {
+.logout-btn:hover,
+.logout-btn:focus {
   background: #b71c1c;
+  outline: none;
 }
 
 /* Dashboard Layout */
@@ -70,12 +76,15 @@ body {
   justify-content: center;
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(80,0,80,0.09);
+  box-shadow: 0 4px 16px rgba(80, 0, 80, 0.09);
   transition: transform 0.15s, box-shadow 0.15s;
+  user-select: none;
 }
-.dashboard-btn:hover {
+.dashboard-btn:hover,
+.dashboard-btn:focus {
   transform: translateY(-4px) scale(1.04);
-  box-shadow: 0 8px 32px rgba(80,0,80,0.14);
+  box-shadow: 0 8px 32px rgba(80, 0, 80, 0.14);
+  outline: none;
 }
 .dashboard-btn-icon {
   font-size: 3.8rem;
@@ -85,6 +94,7 @@ body {
   font-size: 1.18rem;
   font-weight: 600;
   letter-spacing: 1.1px;
+  text-align: center;
 }
 .dashboard-datetime {
   text-align: center;
@@ -93,6 +103,7 @@ body {
   font-weight: 600;
   margin-bottom: 36px;
   letter-spacing: 1.1px;
+  user-select: none;
 }
 .dashboard-status {
   max-width: 500px;
@@ -107,7 +118,8 @@ body {
   border-radius: 12px;
   border: 1.5px solid #b8a1d9;
   background: #f3f3f3;
-  box-shadow: 0 2px 10px rgba(80,0,80,0.06);
+  box-shadow: 0 2px 10px rgba(80, 0, 80, 0.06);
+  user-select: none;
 }
 .status-tile.active {
   border-color: #4CAF50;
@@ -144,14 +156,16 @@ body {
   margin: 60px auto;
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(80,0,80,0.08);
+  box-shadow: 0 8px 32px rgba(80, 0, 80, 0.08);
   padding: 32px 28px;
   text-align: center;
+  box-sizing: border-box;
 }
 .logo {
   width: 70%;
   max-width: 240px;
   margin-bottom: 32px;
+  height: auto;
 }
 h2 {
   color: #4B2265;
@@ -170,7 +184,9 @@ label {
   color: #4B2265;
   font-weight: 600;
 }
-input[type="number"], input[type="text"], input[type="date"] {
+input[type="number"],
+input[type="text"],
+input[type="date"] {
   width: 100%;
   padding: 12px;
   border: 1.5px solid #b8a1d9;
@@ -178,6 +194,14 @@ input[type="number"], input[type="text"], input[type="date"] {
   font-size: 1rem;
   background: #fafaff;
   margin-bottom: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+input[type="number"]:focus,
+input[type="text"]:focus,
+input[type="date"]:focus {
+  border-color: #673ab7;
+  outline: none;
 }
 button {
   width: 100%;
@@ -195,6 +219,11 @@ button {
 button:disabled {
   background: #b8a1d9;
   cursor: not-allowed;
+}
+button:hover:not(:disabled),
+button:focus:not(:disabled) {
+  background: #673ab7;
+  outline: none;
 }
 .close-btn {
   background: #fff;
@@ -221,9 +250,10 @@ table {
   margin: 18px 0;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(80,0,80,0.07);
+  box-shadow: 0 2px 12px rgba(80, 0, 80, 0.07);
 }
-th, td {
+th,
+td {
   padding: 12px 16px;
   text-align: left;
 }
@@ -246,6 +276,7 @@ tr:hover {
   justify-content: center;
   margin: 24px 0 18px 0;
   gap: 16px;
+  flex-wrap: wrap;
 }
 .tab-buttons button {
   width: auto;
@@ -278,7 +309,8 @@ tr:hover {
   cursor: pointer;
   transition: background 0.2s;
 }
-.cat-active, .cat-btn:active {
+.cat-active,
+.cat-btn:active {
   background: #673ab7;
   color: #fff;
 }
@@ -311,9 +343,32 @@ tr:hover {
 
 /* Responsive */
 @media (max-width: 700px) {
-  .dashboard-content { padding: 0 4vw; }
-  .dashboard-buttons { flex-direction: column; align-items: center; }
-  .dashboard-btn { width: 95vw; max-width: 320px; }
-  .appbar { flex-direction: column; gap: 12px; padding: 16px 6vw; }
+  .dashboard-content {
+    padding: 0 4vw;
+  }
+  .dashboard-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  .dashboard-btn {
+    width: 95vw;
+    max-width: 320px;
+  }
+  .appbar {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 6vw;
+  }
+  .appbar-title {
+    flex: none;
+    margin: 0;
+  }
+  .logout-btn {
+    margin-left: 0;
+    width: 100%;
+    max-width: none;
+  }
+  button {
+    font-size: 1.1rem;
+  }
 }
-
