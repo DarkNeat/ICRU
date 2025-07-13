@@ -119,13 +119,13 @@ button:focus:not(:disabled) {
 /* Responsive: Make the box and everything inside BIG on mobile */
 @media (max-width: 600px) {
   .login-container, .main-container {
-    width: 99vw;
-    max-width: 99vw;
+    width: 98vw;
+    max-width: 98vw;
     min-width: 0;
-    padding: 7vw 3vw;
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
+    padding: 32px 6vw 32px 6vw;
+    margin: 0 auto;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(80,0,80,0.08);
   }
   .logo {
     width: 90vw;
@@ -133,7 +133,7 @@ button:focus:not(:disabled) {
     margin-bottom: 24px;
   }
   h1, h2 {
-    font-size: 2.1rem;
+    font-size: 1.5rem;
     margin-bottom: 24px;
   }
   .form-group {
@@ -141,23 +141,69 @@ button:focus:not(:disabled) {
     margin-bottom: 18px;
   }
   label {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   input[type="number"], input[type="text"], input[type="password"] {
-    font-size: 1.3rem;
-    padding: 18px;
+    font-size: 1.1rem;
+    padding: 16px;
   }
   button {
-    font-size: 1.3rem;
-    padding: 18px;
-    margin-bottom: 18px;
+    font-size: 1.1rem;
+    padding: 16px;
+    margin-bottom: 16px;
   }
   .error {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
   }
 }
 
-/* Dashboard and Table Styles (unchanged from your previous CSS) */
+/* AppBar (Dashboard) */
+.appbar {
+  background: #673ab7;
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(80, 0, 80, 0.07);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.appbar-title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  letter-spacing: 1.2px;
+  margin: 0 auto;
+  text-align: center;
+  flex: 1 1 100%;
+}
+.logout-btn {
+  background: #e53935;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 10px 22px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  width: auto;
+  min-width: 0;
+  max-width: 220px;
+  box-sizing: border-box;
+  margin-left: auto;
+}
+.logout-btn:hover,
+.logout-btn:focus {
+  background: #b71c1c;
+  outline: none;
+}
+
+/* Dashboard Layout */
 .dashboard-content {
   max-width: 900px;
   margin: 36px auto 0 auto;
