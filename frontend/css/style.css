@@ -11,53 +11,153 @@ body {
   flex-direction: column;
 }
 
-/* AppBar (Dashboard) */
-.appbar {
-  background: #673ab7;
-  color: #fff;
-  padding: 18px 32px;
-  display: flex;
-  align-items: center;
-  position: relative;
-  box-shadow: 0 4px 16px rgba(80, 0, 80, 0.07);
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.appbar-title {
-  font-size: 1.7rem;
-  font-weight: bold;
-  letter-spacing: 1.2px;
-  margin: 0 auto;
+/* Main/Login Box Styles (shared) */
+.login-container, .main-container {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(80, 0, 80, 0.08);
+  padding: 40px 32px;
   text-align: center;
-  flex: 1 1 100%;
-}
-.logout-btn {
-  background: #e53935;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 1rem;
-  padding: 10px 22px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-  flex-shrink: 0;
-  width: auto;
-  min-width: 0;
-  max-width: 220px;
   box-sizing: border-box;
-  margin-left: auto;
+  width: 95vw;
+  max-width: 500px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
 }
-.logout-btn:hover,
-.logout-btn:focus {
-  background: #b71c1c;
+
+.logo {
+  width: 70%;
+  max-width: 320px;
+  min-width: 120px;
+  height: auto;
+  margin-bottom: 36px;
+  display: block;
+}
+
+h1, h2 {
+  color: #4B2265;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 32px;
+  letter-spacing: 1.1px;
+}
+
+/* Login Form */
+.form-group {
+  width: 100%;
+  margin-bottom: 22px;
+  text-align: left;
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  color: #4B2265;
+  font-weight: 600;
+}
+input[type="number"], input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 20px;
+  border: 1.5px solid #b8a1d9;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  background: #fafaff;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  margin-bottom: 10px;
+}
+input[type="number"]:focus,
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #673ab7;
   outline: none;
 }
 
-/* Dashboard Layout */
+button {
+  width: 100%;
+  padding: 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #fff;
+  background: #4B2265;
+  margin-bottom: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:disabled {
+  background: #b8a1d9;
+  cursor: not-allowed;
+}
+button:hover:not(:disabled),
+button:focus:not(:disabled) {
+  background: #673ab7;
+  outline: none;
+}
+.close-btn {
+  background: #fff;
+  color: #4B2265;
+  border: 2px solid #4B2265;
+  margin-bottom: 0;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 1.1rem;
+  min-height: 22px;
+}
+
+.loading {
+  margin-top: 12px;
+  color: #4B2265;
+  font-weight: bold;
+}
+
+/* Responsive: Make the box and everything inside BIG on mobile */
+@media (max-width: 600px) {
+  .login-container, .main-container {
+    width: 99vw;
+    max-width: 99vw;
+    min-width: 0;
+    padding: 7vw 3vw;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .logo {
+    width: 90vw;
+    max-width: none;
+    margin-bottom: 24px;
+  }
+  h1, h2 {
+    font-size: 2.1rem;
+    margin-bottom: 24px;
+  }
+  .form-group {
+    width: 100%;
+    margin-bottom: 18px;
+  }
+  label {
+    font-size: 1.2rem;
+  }
+  input[type="number"], input[type="text"], input[type="password"] {
+    font-size: 1.3rem;
+    padding: 18px;
+  }
+  button {
+    font-size: 1.3rem;
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  .error {
+    font-size: 1.15rem;
+  }
+}
+
+/* Dashboard and Table Styles (unchanged from your previous CSS) */
 .dashboard-content {
   max-width: 900px;
   margin: 36px auto 0 auto;
@@ -154,132 +254,6 @@ body {
 }
 .status-tile.inactive .status-value {
   color: #d32f2f;
-}
-
-/* Login/Main Box Styles (shared) */
-.login-container, .main-container {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(80, 0, 80, 0.08);
-  padding: 40px 32px;
-  text-align: center;
-  box-sizing: border-box;
-  width: 95vw;
-  max-width: 500px;
-  margin: 40px auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* Make sure it never gets tiny */
-  min-width: 0;
-}
-
-.logo {
-  width: 60%;
-  max-width: 260px;
-  min-width: 120px;
-  height: auto;
-  margin-bottom: 36px;
-  display: block;
-}
-
-h1, h2 {
-  color: #4B2265;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 32px;
-  letter-spacing: 1.1px;
-}
-
-@media (max-width: 600px) {
-  .login-container, .main-container {
-    width: 98vw;
-    max-width: 98vw;
-    padding: 24px 6vw;
-    margin: 16px auto;
-    border-radius: 12px;
-  }
-  .logo {
-    width: 85vw;
-    max-width: 320px;
-    margin-bottom: 28px;
-  }
-  h1, h2 {
-    font-size: 1.5rem;
-    margin-bottom: 22px;
-  }
-}
-
-/* Login Form */
-.form-group {
-  width: 100%;
-  margin-bottom: 22px;
-  text-align: left;
-}
-label {
-  display: block;
-  margin-bottom: 6px;
-  color: #4B2265;
-  font-weight: 600;
-}
-input[type="number"], input[type="text"], input[type="password"] {
-  width: 100%;
-  padding: 16px;
-  border: 1.5px solid #b8a1d9;
-  border-radius: 10px;
-  font-size: 1.15rem;
-  background: #fafaff;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
-  margin-bottom: 6px;
-}
-input[type="number"]:focus,
-input[type="text"]:focus,
-input[type="password"]:focus {
-  border-color: #673ab7;
-  outline: none;
-}
-
-/* Buttons */
-button {
-  width: 100%;
-  padding: 18px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.15rem;
-  font-weight: bold;
-  color: #fff;
-  background: #4B2265;
-  margin-bottom: 16px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-button:disabled {
-  background: #b8a1d9;
-  cursor: not-allowed;
-}
-button:hover:not(:disabled),
-button:focus:not(:disabled) {
-  background: #673ab7;
-  outline: none;
-}
-.close-btn {
-  background: #fff;
-  color: #4B2265;
-  border: 2px solid #4B2265;
-  margin-bottom: 0;
-}
-
-.error {
-  color: #d32f2f;
-  font-size: 1.05rem;
-  min-height: 18px;
-}
-
-.loading {
-  margin-top: 12px;
-  color: #4B2265;
-  font-weight: bold;
 }
 
 /* Table Styles (for attendance, report, inventory) */
