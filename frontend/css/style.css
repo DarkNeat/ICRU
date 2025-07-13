@@ -187,6 +187,7 @@ h2 {
   letter-spacing: 1.1px;
 }
 .form-group {
+  width: 100%;
   margin-bottom: 22px;
   text-align: left;
 }
@@ -196,22 +197,17 @@ label {
   color: #4B2265;
   font-weight: 600;
 }
-input[type="number"],
-input[type="text"],
-input[type="date"] {
+input[type="number"] {
   width: 100%;
   padding: 12px;
   border: 1.5px solid #b8a1d9;
   border-radius: 10px;
   font-size: 1rem;
   background: #fafaff;
-  margin-bottom: 4px;
   box-sizing: border-box;
   transition: border-color 0.2s;
 }
-input[type="number"]:focus,
-input[type="text"]:focus,
-input[type="date"]:focus {
+input[type="number"]:focus {
   border-color: #673ab7;
   outline: none;
 }
@@ -403,8 +399,6 @@ tr:hover {
     margin-bottom: 24px;
   }
   input[type="number"],
-  input[type="text"],
-  input[type="date"],
   button {
     font-size: 1.1rem;
     padding: 14px;
