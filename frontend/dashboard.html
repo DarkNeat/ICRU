@@ -22,21 +22,68 @@
       width: 100vw;
       margin: 0;
       padding: 0;
-      /* remove flex so scroll works on mobile */
       display: block !important;
     }
-    /* Make sure appbar is always visible */
     .appbar {
+      background: #673ab7;
+      color: #fff;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 16px rgba(80,0,80,0.07);
+      gap: 8px;
       position: sticky;
       top: 0;
       z-index: 10;
     }
+    .appbar-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 1.1px;
+      margin: 0 auto;
+      text-align: center;
+      flex: 1 1 100%;
+    }
+    .logout-btn {
+      background: #e53935;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.92rem;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-width: 0;
+      max-width: 120px;
+      box-sizing: border-box;
+      margin-left: auto;
+    }
+    .logout-btn .material-icons {
+      font-size: 1.1rem;
+      margin-right: 2px;
+    }
+    .logout-btn:hover,
+    .logout-btn:focus {
+      background: #b71c1c;
+      outline: none;
+    }
+    /* Responsive dashboard buttons layout */
+    @media (max-width: 700px) {
+      #dashboard-buttons {
+        flex-direction: column !important;
+        align-items: center !important;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="appbar" style="background:#673ab7;color:#fff;padding:18px 32px;display:flex;align-items:center;box-shadow:0 4px 16px rgba(80,0,80,0.07);gap:12px;">
-    <span class="appbar-title" style="font-size:1.7rem;font-weight:bold;letter-spacing:1.2px;margin:0 auto;text-align:center;flex:1 1 100%;">Dashboard</span>
-    <button id="logout-btn" class="logout-btn" style="background:#e53935;color:#fff;border:none;border-radius:10px;font-weight:bold;font-size:1rem;padding:10px 22px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:background 0.2s;flex-shrink:0;width:auto;min-width:0;max-width:220px;box-sizing:border-box;margin-left:auto;">
+  <div class="appbar">
+    <span class="appbar-title">Dashboard</span>
+    <button id="logout-btn" class="logout-btn">
       <span class="material-icons">logout</span> Logout
     </button>
   </div>
@@ -47,9 +94,7 @@
       width: 100vw;
       box-sizing: border-box;
       padding: 0 8vw;
-      max-height: calc(100vh - 72px);
-      overflow-y: auto;
-      min-height: calc(100vh - 72px);
+      min-height: 80vh;
       display: flex;
       flex-direction: column;
       align-items: center;

@@ -16,35 +16,35 @@ const buttons = [
 function getButtonStyle() {
   if (window.innerWidth <= 600) {
     return `
-      width: 92vw;
+      width: 90vw;
       max-width: 340px;
       height: 90px;
       margin: 0 auto 14px auto;
-      font-size: 1.3rem;
-      border-radius: 16px;
+      font-size: 1.15rem;
+      border-radius: 14px;
     `;
   }
   return `
-    width: 140px;
-    height: 110px;
+    width: 120px;
+    height: 90px;
     margin: 14px;
-    font-size: 1.4rem;
-    border-radius: 18px;
+    font-size: 1.2rem;
+    border-radius: 16px;
   `;
 }
 
 function getIconStyle() {
   if (window.innerWidth <= 600) {
-    return "font-size:3.2rem;margin-bottom:6px;";
+    return "font-size:2.2rem;margin-bottom:6px;";
   }
-  return "font-size:4.2rem;margin-bottom:8px;";
+  return "font-size:2.7rem;margin-bottom:8px;";
 }
 
 function getLabelStyle() {
   if (window.innerWidth <= 600) {
-    return "font-size:1.15rem;font-weight:600;letter-spacing:1.1px;text-align:center;";
+    return "font-size:1.07rem;font-weight:600;letter-spacing:1.1px;text-align:center;";
   }
-  return "font-size:1.35rem;font-weight:600;letter-spacing:1.1px;text-align:center;";
+  return "font-size:1.18rem;font-weight:600;letter-spacing:1.1px;text-align:center;";
 }
 
 function renderDashboardButtons() {
