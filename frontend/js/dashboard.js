@@ -8,13 +8,12 @@ document.getElementById('logout-btn').addEventListener('click', function() {
 const buttons = [
   { icon: 'fingerprint', label: 'Attendance', link: 'attendance.html', color: '#673ab7' },
   { icon: 'bar_chart', label: 'Report', link: 'report.html', color: '#3f51b5' },
-  { icon: 'inventory', label: 'Inventory', link: 'inventory.html', color: '#009688' },
-  { icon: 'qr_code_2', label: 'Download App', link: 'download.html', color: '#3949ab' }
+  { icon: 'inventory', label: 'Inventory', link: 'inventory.html', color: '#009688' }
 ];
 
 // Responsive style helper
 function getButtonStyle() {
-  if (window.innerWidth <= 600) {
+  if (window.innerWidth <= 700) {
     return `
       width: 90vw;
       max-width: 340px;
@@ -22,29 +21,34 @@ function getButtonStyle() {
       margin: 0 auto 14px auto;
       font-size: 1.15rem;
       border-radius: 14px;
+      display: flex;
+      flex-direction: row;
     `;
   }
+  // On desktop: wide "card" style, not tiny square
   return `
-    width: 120px;
-    height: 90px;
+    width: 260px;
+    height: 110px;
     margin: 14px;
-    font-size: 1.2rem;
+    font-size: 1.22rem;
     border-radius: 16px;
+    display: flex;
+    flex-direction: row;
   `;
 }
 
 function getIconStyle() {
-  if (window.innerWidth <= 600) {
-    return "font-size:2.2rem;margin-bottom:6px;";
+  if (window.innerWidth <= 700) {
+    return "font-size:2.2rem;margin-bottom:0;margin-right:14px;";
   }
-  return "font-size:2.7rem;margin-bottom:8px;";
+  return "font-size:2.7rem;margin-bottom:0;margin-right:18px;";
 }
 
 function getLabelStyle() {
-  if (window.innerWidth <= 600) {
-    return "font-size:1.07rem;font-weight:600;letter-spacing:1.1px;text-align:center;";
+  if (window.innerWidth <= 700) {
+    return "font-size:1.07rem;font-weight:600;letter-spacing:1.1px;text-align:left;";
   }
-  return "font-size:1.18rem;font-weight:600;letter-spacing:1.1px;text-align:center;";
+  return "font-size:1.18rem;font-weight:600;letter-spacing:1.1px;text-align:left;";
 }
 
 function renderDashboardButtons() {
@@ -58,10 +62,8 @@ function renderDashboardButtons() {
       style="
         background: ${btn.color};
         ${style}
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         color: #fff;
         cursor: pointer;
         box-shadow: 0 4px 16px rgba(80,0,80,0.09);
