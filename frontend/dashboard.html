@@ -2,23 +2,66 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
   <meta charset="UTF-8">
   <title>ICRU Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    html, body {
+      height: 100%;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      width: 100vw;
+      overflow-x: hidden;
+    }
+    body {
+      background: #f5f5f5;
+      min-height: 100vh;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      /* remove flex so scroll works on mobile */
+      display: block !important;
+    }
+    /* Make sure appbar is always visible */
+    .appbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
-  <div class="appbar">
-    <span class="appbar-title">Dashboard</span>
-    <button id="logout-btn" class="logout-btn">
+  <div class="appbar" style="background:#673ab7;color:#fff;padding:18px 32px;display:flex;align-items:center;box-shadow:0 4px 16px rgba(80,0,80,0.07);gap:12px;">
+    <span class="appbar-title" style="font-size:1.7rem;font-weight:bold;letter-spacing:1.2px;margin:0 auto;text-align:center;flex:1 1 100%;">Dashboard</span>
+    <button id="logout-btn" class="logout-btn" style="background:#e53935;color:#fff;border:none;border-radius:10px;font-weight:bold;font-size:1rem;padding:10px 22px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:background 0.2s;flex-shrink:0;width:auto;min-width:0;max-width:220px;box-sizing:border-box;margin-left:auto;">
       <span class="material-icons">logout</span> Logout
     </button>
   </div>
-  <div class="dashboard-content">
-    <div class="dashboard-buttons" id="dashboard-buttons"></div>
-    <div class="dashboard-datetime" id="datetime"></div>
-    <div class="dashboard-status" id="status-tiles"></div>
+  <div id="dashboard-content"
+    style="
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100vw;
+      box-sizing: border-box;
+      padding: 0 8vw;
+      max-height: calc(100vh - 72px);
+      overflow-y: auto;
+      min-height: calc(100vh - 72px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    ">
+    <div id="dashboard-buttons"
+      style="display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin:32px 0 32px 0;width:100%;">
+    </div>
+    <div id="datetime"
+      style="text-align:center;font-size:1.3rem;color:#4B2265;font-weight:600;margin-bottom:24px;letter-spacing:1.1px;user-select:none;">
+    </div>
+    <div id="status-tiles" style="width:100%;max-width:500px;margin:0 auto;"></div>
   </div>
   <script src="js/dashboard.js"></script>
 </body>
