@@ -15,33 +15,6 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       color: #4B2265;
     }
-    /* Full-width Back button */
-    .back-btn {
-      width: 100vw;
-      height: 50px;
-      padding: 0;
-      margin: 0 0 16px 0;
-      background: #673ab7;
-      color: #fff;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(80,0,80,0.07);
-      transition: background 0.2s;
-      position: relative;
-      left: 0;
-      right: 0;
-    }
-    .back-btn:hover, .back-btn:focus {
-      background: #4B2265;
-      outline: none;
-    }
-
-    /* Main content area */
     .attendance-main {
       max-width: 900px;
       margin: 0 auto;
@@ -52,6 +25,27 @@
       flex-direction: column;
       align-items: stretch;
       justify-content: flex-start;
+    }
+    .back-btn {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 18px 0;
+      margin: 0 0 18px 0;
+      background: #673ab7;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(80,0,80,0.07);
+      transition: background 0.2s;
+      text-align: center;
+    }
+    .back-btn:hover, .back-btn:focus {
+      background: #4B2265;
+      outline: none;
     }
     .center-title {
       text-align: center;
@@ -93,19 +87,19 @@
       }
       .back-btn {
         font-size: 1rem;
-        height: 44px;
+        padding: 14px 0;
       }
     }
   </style>
 </head>
 <body>
-  <button
-    onclick="window.location.href='dashboard.html'"
-    class="back-btn"
-  >
-    Back to Dashboard
-  </button>
   <div class="attendance-main">
+    <button
+      onclick="window.location.href='dashboard.html'"
+      class="back-btn"
+    >
+      Back to Dashboard
+    </button>
     <h1 class="center-title">Attendance</h1>
     <div class="tab-buttons">
       <button id="tab-daily" class="tab-active">Daily</button>
