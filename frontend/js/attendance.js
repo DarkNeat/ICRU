@@ -1,7 +1,10 @@
 let currentTab = 'daily';
 
-document.getElementById('tab-daily').onclick = () => switchTab('daily');
-document.getElementById('tab-monthly').onclick = () => switchTab('monthly');
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('tab-daily').onclick = () => switchTab('daily');
+  document.getElementById('tab-monthly').onclick = () => switchTab('monthly');
+  switchTab('daily');
+});
 
 function switchTab(tab) {
   currentTab = tab;
@@ -37,11 +40,23 @@ async function renderDailyAttendance() {
 async function fetchDailyAttendance() {
   const date = document.getElementById('daily-date').value;
   document.getElementById('daily-table').innerHTML = 'Loading...';
-  const res = await fetch(`/api/attendance/daily?date=${date}`); // <-- FIXED HERE
+  const res = await fetch(`/api/attendance/daily?date=${date}`);
   const data = await res.json();
   renderDailyTable(data);
 }
 
+// Helper: format datetime as "h:mm am/pm"
+function formatTime(datetimeStr) {
+  if (!datetimeStr) return '';
+  const d = new Date(datetimeStr);
+  if (isNaN(d)) return '';
+  let h = d.getHours();
+  const m = d.getMinutes();
+  const ampm = h >= 12 ? 'pm' : 'am';
+  h = h % 12;
+  h = h ? h : 12; // 0 => 12
+  return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+}
 
 function renderDailyTable(data) {
   if (!data || data.length === 0) {
@@ -53,8 +68,8 @@ function renderDailyTable(data) {
   data.forEach(row => {
     if (!row.time_in_1 || !row.time_out_1) missing++;
     else {
-      const t = row.time_in_1.split(':');
-      if (parseInt(t[0]) > 9 || (parseInt(t[0]) === 9 && parseInt(t[1]) > 0)) late++;
+      const t = new Date(row.time_in_1);
+      if (t.getHours() > 9 || (t.getHours() === 9 && t.getMinutes() > 0)) late++;
     }
   });
   document.getElementById('daily-summary').innerText =
@@ -65,16 +80,17 @@ function renderDailyTable(data) {
     </tr>`;
   data.forEach(row => {
     html += `<tr>
-      <td>${row.ID}</td>
+      <td>${row.Employee_ID || row.ID || ''}</td>
       <td>${row.name_acc || ''}</td>
-      <td>${row.time_in_1 || ''}</td>
-      <td>${row.time_out_1 || ''}</td>
-      <td>${row.time_in_2 || ''}</td>
-      <td>${row.time_out_2 || ''}</td>
+      <td>${formatTime(row.time_in_1)}</td>
+      <td>${formatTime(row.time_out_1)}</td>
+      <td>${formatTime(row.time_in_2)}</td>
+      <td>${formatTime(row.time_out_2)}</td>
     </tr>`;
   });
   html += '</table>';
-  document.getElementById('daily-table').innerHTML = html;
+  // Center the table using flexbox wrapper
+  document.getElementById('daily-table').innerHTML = `<div style="display:flex;justify-content:center;">${html}</div>`;
 }
 
 async function renderMonthlyAttendance() {
@@ -102,11 +118,10 @@ async function fetchMonthlyAttendance() {
   const month = document.getElementById('monthly-month').value;
   const year = document.getElementById('monthly-year').value;
   document.getElementById('monthly-table').innerHTML = 'Loading...';
-  const res = await fetch(`/api/attendance/monthly?month=${month}&year=${year}`); // <-- FIXED HERE
+  const res = await fetch(`/api/attendance/monthly?month=${month}&year=${year}`);
   const data = await res.json();
   renderMonthlyTable(data);
 }
-
 
 function renderMonthlyTable(data) {
   if (!data || data.length === 0) {
@@ -130,7 +145,7 @@ function renderMonthlyTable(data) {
     </tr>`;
   data.forEach(row => {
     html += `<tr>
-      <td>${row.ID}</td>
+      <td>${row.Employee_ID || row.ID || ''}</td>
       <td>${row.name_acc || ''}</td>
       <td>${row.present_days}</td>
       <td>${row.late_days}</td>
@@ -139,7 +154,6 @@ function renderMonthlyTable(data) {
     </tr>`;
   });
   html += '</table>';
-  document.getElementById('monthly-table').innerHTML = html;
+  // Center the table using flexbox wrapper
+  document.getElementById('monthly-table').innerHTML = `<div style="display:flex;justify-content:center;">${html}</div>`;
 }
-
-switchTab('daily');
