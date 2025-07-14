@@ -71,11 +71,12 @@ app.get('/api/attendance/daily', async (req, res) => {
   try {
     const conn = await mysql.createConnection(dbConfig);
     const [rows] = await conn.execute(
-      `SELECT ua.ID, ua.name_acc, ta.time_in_1, ta.time_out_1, ta.time_in_2, ta.time_out_2
-       FROM TimeAttendance ta
-       JOIN User_Account ua ON ta.employee_id = ua.ID
-       WHERE ta.date = ?
-       ORDER BY ua.name_acc`, [date]);
+      `SELECT ua.Employee_ID, ua.name_acc, ta.time_in_1, ta.time_out_1, ta.time_in_2, ta.time_out_2
+ FROM TimeAttendance ta
+ JOIN User_Account ua ON ta.employee_id = ua.Employee_ID
+ WHERE ta.date = ?
+ ORDER BY ua.name_acc`
+, [date]);
     await conn.end();
     res.json(rows);
   } catch (e) {
@@ -90,16 +91,17 @@ app.get('/api/attendance/monthly', async (req, res) => {
   try {
     const conn = await mysql.createConnection(dbConfig);
     const [rows] = await conn.execute(
-      `SELECT ua.ID, ua.name_acc,
-        COUNT(CASE WHEN ta.time_in_1 IS NOT NULL THEN 1 END) AS present_days,
-        COUNT(CASE WHEN ta.time_in_1 > DATE_ADD(DATE(ta.time_in_1), INTERVAL '09:00' HOUR_MINUTE) THEN 1 END) AS late_days,
-        COUNT(CASE WHEN ta.time_in_1 IS NULL OR ta.time_out_1 IS NULL THEN 1 END) AS missing_punches,
-        AVG(TIMESTAMPDIFF(MINUTE, ta.time_in_1, ta.time_out_1)) / 60 AS avg_hours
-      FROM TimeAttendance ta
-      JOIN User_Account ua ON ta.employee_id = ua.ID
-      WHERE MONTH(ta.date) = ? AND YEAR(ta.date) = ?
-      GROUP BY ua.ID, ua.name_acc
-      ORDER BY ua.name_acc`, [month, year]);
+      `SELECT ua.Employee_ID, ua.name_acc,
+  COUNT(CASE WHEN ta.time_in_1 IS NOT NULL THEN 1 END) AS present_days,
+  COUNT(CASE WHEN ta.time_in_1 > DATE_ADD(DATE(ta.time_in_1), INTERVAL '09:00' HOUR_MINUTE) THEN 1 END) AS late_days,
+  COUNT(CASE WHEN ta.time_in_1 IS NULL OR ta.time_out_1 IS NULL THEN 1 END) AS missing_punches,
+  AVG(TIMESTAMPDIFF(MINUTE, ta.time_in_1, ta.time_out_1)) / 60 AS avg_hours
+FROM TimeAttendance ta
+JOIN User_Account ua ON ta.employee_id = ua.Employee_ID
+WHERE MONTH(ta.date) = ? AND YEAR(ta.date) = ?
+GROUP BY ua.Employee_ID, ua.name_acc
+ORDER BY ua.name_acc`
+, [month, year]);
     await conn.end();
     res.json(rows);
   } catch (e) {
