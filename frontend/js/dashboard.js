@@ -17,38 +17,42 @@ function getButtonStyle() {
     return `
       width: 90vw;
       max-width: 340px;
-      height: 90px;
+      height: 110px;
       margin: 0 auto 14px auto;
       font-size: 1.15rem;
       border-radius: 14px;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     `;
   }
   // On desktop: wide "card" style, not tiny square
   return `
     width: 260px;
-    height: 110px;
+    height: 130px;
     margin: 14px;
     font-size: 1.22rem;
     border-radius: 16px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   `;
 }
 
 function getIconStyle() {
   if (window.innerWidth <= 700) {
-    return "font-size:2.2rem;margin-bottom:0;margin-right:14px;";
+    return "font-size:2.7rem;margin-bottom:10px;";
   }
-  return "font-size:2.7rem;margin-bottom:0;margin-right:18px;";
+  return "font-size:3.1rem;margin-bottom:14px;";
 }
 
 function getLabelStyle() {
   if (window.innerWidth <= 700) {
-    return "font-size:1.07rem;font-weight:600;letter-spacing:1.1px;text-align:left;";
+    return "font-size:1.13rem;font-weight:600;letter-spacing:1.1px;text-align:center;";
   }
-  return "font-size:1.18rem;font-weight:600;letter-spacing:1.1px;text-align:left;";
+  return "font-size:1.22rem;font-weight:600;letter-spacing:1.1px;text-align:center;";
 }
 
 function renderDashboardButtons() {
@@ -62,8 +66,6 @@ function renderDashboardButtons() {
       style="
         background: ${btn.color};
         ${style}
-        align-items: center;
-        justify-content: flex-start;
         color: #fff;
         cursor: pointer;
         box-shadow: 0 4px 16px rgba(80,0,80,0.09);
@@ -76,10 +78,10 @@ function renderDashboardButtons() {
     >
       <span
         class="material-icons"
-        style="${iconStyle}"
+        style="${iconStyle};display:block;"
       >${btn.icon}</span>
       <div
-        style="${labelStyle}"
+        style="${labelStyle};display:block;"
       >${btn.label}</div>
     </div>
   `).join('');
