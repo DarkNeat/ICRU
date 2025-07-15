@@ -1,20 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Inventory - ICRU</title>
-  <link rel="stylesheet" href="css/style.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #4B2265;
+    }
+
+    .inventory-main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 6vw;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .back-btn {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 18px 0;
+      margin-bottom: 18px;
+      background: #673ab7;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(80,0,80,0.07);
+    }
+
+    .back-btn:hover {
+      background: #4B2265;
+    }
+
+    h1.center-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+
+    .cat-btn {
+      background: #ede7f6;
+      color: #4B2265;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 4px 4px 4px 0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .cat-active {
+      background: #673ab7 !important;
+      color: #fff !important;
+    }
+
+    .cat-btn:hover {
+      background: #d1c4e9;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .inv-search {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #b8a1d9;
+      font-size: 0.95rem;
+      width: 160px;
+    }
+
+    .stock-alert-btn {
+      background: #673ab7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .stock-alert-btn:hover {
+      background: #4B2265;
+    }
+
+    table {
+      border-collapse: collapse;
+      background: #fff;
+      width: 100%;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(80, 0, 80, 0.06);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 0.98rem;
+    }
+
+    th {
+      background: #ede7f6;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background: #f6f2fa;
+    }
+
+    tr:hover {
+      background: #e1bee7;
+    }
+
+    @media (max-width: 600px) {
+      .inventory-main {
+        padding: 0 4vw;
+      }
+      .back-btn {
+        font-size: 1rem;
+        padding: 14px 0;
+      }
+      h1.center-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <div class="dashboard-header">
-      <h1 style="text-align:center; width:100%; margin:0 auto;">Inventory</h1>
-      <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
-    </div>
+  <div class="inventory-main">
+    <button onclick="window.location.href='dashboard.html'" class="back-btn">Back to Dashboard</button>
+    <h1 class="center-title">Inventory</h1>
     <div id="inventory-controls"></div>
-    <div id="inventory-table"></div>
     <div id="inventory-alert"></div>
+    <div id="inventory-table"></div>
   </div>
-  <script src="js/inventory.js"></script>
+
+  <script>
+    const categories = ['All', 'Spice', 'Meat', 'Vegetable', 'Grain', 'Dairy', 'Other'];
+    let inventoryData = [];
+    let selectedCategory = 'All';
+    let searchText = '';
+
+    function renderInventoryControls() {
+      let catBtns = categories.map(cat =>
+        `<button class="cat-btn${cat === selectedCategory ? ' cat-active' : ''}" onclick="selectCategory('${cat}')">${cat}</button>`
+      ).join('');
+      document.getElementById('inventory-controls').innerHTML = `
+        <div class="filter-bar">
+          ${catBtns}
+          <input type="text" id="inventory-search" class="inv-search" placeholder="Search inventory..." value="${searchText}">
+          <button onclick="showStockAlert()" class="stock-alert-btn">Stock Alert</button>
+        </div>
+      `;
+      document.getElementById('inventory-search').oninput = e => {
+        searchText = e.target.value;
+        renderInventoryTable();
+      };
+    }
+
+    function selectCategory(cat) {
+      selectedCategory = cat;
+      renderInventoryControls();
+      renderInventoryTable();
+    }
+
+    function filterInventory() {
+      return inventoryData.filter(item => {
+        const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
+        const matchesSearch = searchText === '' ||
+          (item.ingredient_name && item.ingredient_name.toLowerCase().includes(searchText.toLowerCase())) ||
+          (item.category && item.category.toLowerCase().includes(searchText.toLowerCase()));
+        return matchesCategory && matchesSearch;
+      });
+    }
+
+    function renderInventoryTable() {
+      const items = filterInventory();
+      if (items.length === 0) {
+        document.getElementById('inventory-table').innerHTML = '<div style="color:gray;">No inventory items.</div>';
+        return;
+      }
+
+      let html = `<table>
+        <tr>
+          <th>Ingredient</th><th>Category</th><th>Quantity</th><th>Unit</th>
+        </tr>`;
+
+      items.forEach(item => {
+        html += `<tr>
+          <td>${item.ingredient_name}</td>
+          <td>${item.category}</td>
+          <td>${item.quantity}</td>
+          <td>${item.unit}</td>
+        </tr>`;
+      });
+
+      html += `</table>`;
+      document.getElementById('inventory-table').innerHTML = html;
+    }
+
+    function showStockAlert() {
+      const alerts = inventoryData.filter(item => {
+        const qty = parseFloat(item.quantity) || 0;
+        const full = parseFloat(item.full_stock) || 0;
+        return qty === 0 || (full > 0 && qty <= full / 5);
+      });
+
+      if (alerts.length === 0) {
+        alert('No items are low or out of stock.');
+        return;
+      }
+
+      let html = `<table>
+        <tr>
+          <th>Ingredient</th><th>Category</th><th>Quantity</th><th>Unit</th><th>Full Stock</th>
+        </tr>`;
+
+      alerts.forEach(item => {
+        html += `<tr>
+          <td>${item.ingredient_name}</td>
+          <td>${item.category}</td>
+          <td>${item.quantity}</td>
+          <td>${item.unit}</td>
+          <td>${item.full_stock || ''}</td>
+        </tr>`;
+      });
+
+      html += `</table>`;
+      document.getElementById('inventory-alert').innerHTML = html;
+      setTimeout(() => {
+        document.getElementById('inventory-alert').innerHTML = '';
+      }, 10000);
+    }
+
+    async function fetchInventory() {
+      document.getElementById('inventory-table').innerHTML = 'Loading...';
+      const res = await fetch('/api/inventory');
+      inventoryData = await res.json();
+      renderInventoryControls();
+      renderInventoryTable();
+    }
+
+    fetchInventory();
+  </script>
 </body>
 </html>
