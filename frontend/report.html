@@ -1,24 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
-  <meta charset="UTF-8">
   <title>Sales Report - ICRU</title>
-  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #4B2265;
+    }
+    .report-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 8vw;
+      box-sizing: border-box;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .back-btn {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 18px 0;
+      margin-bottom: 18px;
+      background: #673ab7;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(80, 0, 80, 0.07);
+      transition: background 0.2s;
+    }
+    .back-btn:hover {
+      background: #4B2265;
+    }
+    .center-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .tab-buttons button {
+      padding: 12px 32px;
+      border-radius: 10px 10px 0 0;
+      background: #ede7f6;
+      color: #4B2265;
+      border: none;
+      font-size: 1.07rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .tab-buttons .tab-active {
+      background: #673ab7;
+      color: #fff;
+    }
+    .center-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      background: #fff;
+      min-width: 100%;
+      box-shadow: 0 2px 10px rgba(80, 0, 80, 0.06);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 16px;
+    }
+    th {
+      background: #ede7f6;
+      color: #4B2265;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background: #f6f2fa;
+    }
+    tr:hover {
+      background: #e1bee7;
+    }
+    .summary {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 600px) {
+      .report-container {
+        padding: 0 4vw;
+      }
+      .back-btn {
+        font-size: 1rem;
+        padding: 14px 0;
+      }
+      .center-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <div class="dashboard-header">
-      <h1 style="text-align:center; width:100%; margin:0 auto;">Sales Report</h1>
-      <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
-    </div>
+  <div class="report-container">
+    <button onclick="window.location.href='dashboard.html'" class="back-btn">Back to Dashboard</button>
+    <h1 class="center-title">Sales Report</h1>
     <div class="tab-buttons">
       <button id="tab-daily" class="tab-active">Daily</button>
       <button id="tab-monthly">Monthly</button>
     </div>
     <div id="report-content"></div>
   </div>
-  <script src="js/report.js"></script>
+
+  <script>
+    let reportTab = 'daily';
+
+    document.getElementById('tab-daily').onclick = () => switchReportTab('daily');
+    document.getElementById('tab-monthly').onclick = () => switchReportTab('monthly');
+
+    function switchReportTab(tab) {
+      reportTab = tab;
+      document.getElementById('tab-daily').classList.toggle('tab-active', tab === 'daily');
+      document.getElementById('tab-monthly').classList.toggle('tab-active', tab === 'monthly');
+      renderReportTab();
+    }
+
+    function renderReportTab() {
+      if (reportTab === 'daily') {
+        renderDailyReport();
+      } else {
+        renderMonthlyReport();
+      }
+    }
+
+    function formatTime(timeStr) {
+      if (!timeStr) return '';
+      const parts = timeStr.trim().split(':');
+      let h = parseInt(parts[0], 10);
+      const m = parts[1];
+      const ampm = h >= 12 ? 'pm' : 'am';
+      h = h % 12;
+      h = h ? h : 12;
+      return `${h}:${m} ${ampm}`;
+    }
+
+    async function renderDailyReport() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('report-content').innerHTML = `
+        <div class="center-controls">
+          <label for="daily-date">Date:</label>
+          <input type="date" id="daily-date" value="${today}">
+          <button id="daily-refresh">Refresh</button>
+        </div>
+        <div id="daily-summary" class="summary"></div>
+        <div id="daily-table"></div>
+      `;
+      document.getElementById('daily-refresh').onclick = fetchDailyReport;
+      document.getElementById('daily-date').onchange = fetchDailyReport;
+      fetchDailyReport();
+    }
+
+    async function fetchDailyReport() {
+      const date = document.getElementById('daily-date').value;
+      document.getElementById('daily-table').innerHTML = 'Loading...';
+      const res = await fetch(`/api/report/daily?date=${date}`);
+      const data = await res.json();
+      renderDailyReportTable(data);
+    }
+
+    function renderDailyReportTable(data) {
+      if (!data || data.length === 0) {
+        document.getElementById('daily-table').innerHTML = 'No data available.';
+        document.getElementById('daily-summary').innerText = '';
+        return;
+      }
+      let totalSales = 0, totalTips = 0;
+      data.forEach(row => {
+        totalSales += parseFloat(row.Total) || 0;
+        totalTips += parseFloat(row.Tip) || 0;
+      });
+      document.getElementById('daily-summary').innerText =
+        `🧾 Orders: ${data.length}   💵 Total Sales: ${totalSales.toFixed(2)}   🎁 Total Tips: ${totalTips.toFixed(2)}`;
+      let html = `<table>
+        <tr>
+          <th>Order ID</th><th>Customer Ref</th><th>Time</th><th>Total</th><th>Tip</th><th>Payment Mode</th>
+        </tr>`;
+      data.forEach(row => {
+        html += `<tr>
+          <td>${row.OrderID}</td>
+          <td>${row.CustomerRef || ''}</td>
+          <td>${formatTime(row.Time)}</td>
+          <td>${row.Total || ''}</td>
+          <td>${row.Tip || ''}</td>
+          <td>${row.PaymentMode || ''}</td>
+        </tr>`;
+      });
+      html += `</table>`;
+      document.getElementById('daily-table').innerHTML = html;
+    }
+
+    async function renderMonthlyReport() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const year = now.getFullYear();
+      document.getElementById('report-content').innerHTML = `
+        <div class="center-controls">
+          <label for="monthly-month">Month:</label>
+          <select id="monthly-month">${[...Array(12).keys()]
+            .map(i => `<option value="${i + 1}" ${i + 1 === month ? 'selected' : ''}>${new Date(0, i).toLocaleString('en', { month: 'long' })}</option>`)
+            .join('')}</select>
+          <label for="monthly-year">Year:</label>
+          <select id="monthly-year">${[...Array(6).keys()]
+            .map(i => `<option value="${2020 + i}" ${2020 + i === year ? 'selected' : ''}>${2020 + i}</option>`)
+            .join('')}</select>
+          <button id="monthly-refresh">Refresh</button>
+        </div>
+        <div id="monthly-summary" class="summary"></div>
+        <div id="monthly-table"></div>
+      `;
+      document.getElementById('monthly-refresh').onclick = fetchMonthlyReport;
+      document.getElementById('monthly-month').onchange = fetchMonthlyReport;
+      document.getElementById('monthly-year').onchange = fetchMonthlyReport;
+      fetchMonthlyReport();
+    }
+
+    async function fetchMonthlyReport() {
+      const month = document.getElementById('monthly-month').value;
+      const year = document.getElementById('monthly-year').value;
+      document.getElementById('monthly-table').innerHTML = 'Loading...';
+      const res = await fetch(`/api/report/monthly?month=${month}&year=${year}`);
+      const data = await res.json();
+      renderMonthlyReportTable(data);
+    }
+
+    function renderMonthlyReportTable(data) {
+      if (!data || data.length === 0) {
+        document.getElementById('monthly-table').innerHTML = 'No data available.';
+        document.getElementById('monthly-summary').innerText = '';
+        return;
+      }
+      let totalSales = 0, totalTips = 0;
+      data.forEach(row => {
+        totalSales += parseFloat(row.Total) || 0;
+        totalTips += parseFloat(row.Tip) || 0;
+      });
+      document.getElementById('monthly-summary').innerText =
+        `🧾 Orders: ${data.length}   💵 Total Sales: ${totalSales.toFixed(2)}   🎁 Total Tips: ${totalTips.toFixed(2)}`;
+      let html = `<table>
+        <tr>
+          <th>Order ID</th><th>Customer Ref</th><th>Date</th><th>Time</th><th>Total</th><th>Tip</th><th>Payment Mode</th>
+        </tr>`;
+      data.forEach(row => {
+        html += `<tr>
+          <td>${row.OrderID}</td>
+          <td>${row.CustomerRef || ''}</td>
+          <td>${row.Date || ''}</td>
+          <td>${formatTime(row.Time)}</td>
+          <td>${row.Total || ''}</td>
+          <td>${row.Tip || ''}</td>
+          <td>${row.PaymentMode || ''}</td>
+        </tr>`;
+      });
+      html += `</table>`;
+      document.getElementById('monthly-table').innerHTML = html;
+    }
+
+    switchReportTab('daily');
+  </script>
 </body>
 </html>
