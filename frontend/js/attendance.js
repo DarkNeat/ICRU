@@ -6,6 +6,28 @@ document.addEventListener('DOMContentLoaded', () => {
   switchTab('daily');
 });
 
+// === Timezone-free time formatter ===
+function formatTime(datetimeStr) {
+  if (!datetimeStr) return '';
+  // Handles both "YYYY-MM-DD HH:MM:SS" and "YYYY-MM-DDTHH:MM:SS.000Z"
+  let timePart = '';
+  if (datetimeStr.includes('T')) {
+    // "YYYY-MM-DDTHH:MM:SS.000Z" or "YYYY-MM-DDTHH:MM:SS"
+    timePart = datetimeStr.split('T')[1].split('.')[0];
+  } else if (datetimeStr.includes(' ')) {
+    // "YYYY-MM-DD HH:MM:SS"
+    timePart = datetimeStr.split(' ')[1];
+  } else {
+    return '';
+  }
+  let [h, m] = timePart.split(':');
+  h = parseInt(h, 10);
+  const ampm = h >= 12 ? 'pm' : 'am';
+  h = h % 12;
+  h = h ? h : 12; // 0 => 12
+  return `${h}:${m} ${ampm}`;
+}
+
 function switchTab(tab) {
   currentTab = tab;
   document.getElementById('tab-daily').classList.toggle('tab-active', tab === 'daily');
@@ -45,19 +67,6 @@ async function fetchDailyAttendance() {
   renderDailyTable(data);
 }
 
-// Helper: format datetime as "h:mm am/pm"
-function formatTime(datetimeStr) {
-  if (!datetimeStr) return '';
-  const d = new Date(datetimeStr);
-  if (isNaN(d)) return '';
-  let h = d.getHours();
-  const m = d.getMinutes();
-  const ampm = h >= 12 ? 'pm' : 'am';
-  h = h % 12;
-  h = h ? h : 12; // 0 => 12
-  return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
-}
-
 function renderDailyTable(data) {
   if (!data || data.length === 0) {
     document.getElementById('daily-table').innerHTML = 'No data available.';
@@ -68,8 +77,18 @@ function renderDailyTable(data) {
   data.forEach(row => {
     if (!row.time_in_1 || !row.time_out_1) missing++;
     else {
-      const t = new Date(row.time_in_1);
-      if (t.getHours() > 9 || (t.getHours() === 9 && t.getMinutes() > 0)) late++;
+      // Use hour/minute as stored (UAE time)
+      let timePart = '';
+      if (row.time_in_1) {
+        if (row.time_in_1.includes('T')) {
+          timePart = row.time_in_1.split('T')[1].split(':');
+        } else if (row.time_in_1.includes(' ')) {
+          timePart = row.time_in_1.split(' ')[1].split(':');
+        }
+        let h = parseInt(timePart[0], 10);
+        let m = parseInt(timePart[1], 10);
+        if (h > 9 || (h === 9 && m > 0)) late++;
+      }
     }
   });
   document.getElementById('daily-summary').innerText =
