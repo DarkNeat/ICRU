@@ -203,9 +203,10 @@
         totalSales += parseFloat(row.Total || 0);
         totalTips += parseFloat(row.Tip || 0);
       });
+      let totalRevenue = totalSales + totalTips;
 
       document.getElementById('daily-summary').innerText =
-        `🧾 Orders: ${data.length} 💵 Total Sales: ${totalSales.toFixed(2)} 🎁 Total Tips: ${totalTips.toFixed(2)}`;
+        `🧾 Orders: ${data.length} 💵 Total Sales: ${totalSales.toFixed(2)} 🎁 Total Tips: ${totalTips.toFixed(2)} 💰 Total Revenue: ${totalRevenue.toFixed(2)}`;
 
       let html = `<table>
         <tr>
@@ -278,9 +279,10 @@
         totalSales += parseFloat(row.Total || 0);
         totalTips += parseFloat(row.Tip || 0);
       });
+      let totalRevenue = totalSales + totalTips;
 
       document.getElementById('monthly-summary').innerText =
-        `🧾 Orders: ${data.length} 💵 Total Sales: ${totalSales.toFixed(2)} 🎁 Total Tips: ${totalTips.toFixed(2)}`;
+        `🧾 Orders: ${data.length} 💵 Total Sales: ${totalSales.toFixed(2)} 🎁 Total Tips: ${totalTips.toFixed(2)} 💰 Total Revenue: ${totalRevenue.toFixed(2)}`;
 
       let html = `<table>
         <tr>
