@@ -38,10 +38,11 @@ document.getElementById('report-content').innerHTML = `
 async function fetchDailyReport() {
   const date = document.getElementById('daily-date').value;
   document.getElementById('daily-table').innerHTML = 'Loading...';
-  const res = await fetch(`http://localhost:3000/api/report/daily?date=${date}`);
+  const res = await fetch(`/api/report/daily?date=${date}`); // <-- FIXED HERE
   const data = await res.json();
   renderDailyReportTable(data);
 }
+
 
 function renderDailyReportTable(data) {
   if (!data || data.length === 0) {
@@ -98,10 +99,11 @@ async function fetchMonthlyReport() {
   const month = document.getElementById('monthly-month').value;
   const year = document.getElementById('monthly-year').value;
   document.getElementById('monthly-table').innerHTML = 'Loading...';
-  const res = await fetch(`http://localhost:3000/api/report/monthly?month=${month}&year=${year}`);
+  const res = await fetch(`/api/report/monthly?month=${month}&year=${year}`); // <-- FIXED HERE
   const data = await res.json();
   renderMonthlyReportTable(data);
 }
+
 
 function renderMonthlyReportTable(data) {
   if (!data || data.length === 0) {

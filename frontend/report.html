@@ -83,6 +83,31 @@
       justify-content: center;
       align-items: center;
     }
+    .summary-card {
+      margin: 0 auto 24px auto;
+      width: 100%;
+      max-width: 600px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(80, 0, 80, 0.12);
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 22px 8px;
+      font-size: 1.16rem;
+      font-weight: 600;
+      gap: 0;
+      flex-wrap: wrap;
+      color: #4B2265;
+    }
+    .summary-card span {
+      display: flex;
+      align-items: center;
+      margin: 8px 10px;
+      gap: 5px;
+      font-size: 1.14rem;
+      white-space: nowrap;
+    }
     table {
       border-collapse: collapse;
       background: #fff;
@@ -106,12 +131,6 @@
     tr:hover {
       background: #e1bee7;
     }
-    .summary {
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
     @media (max-width: 600px) {
       .report-main {
         padding: 0 4vw;
@@ -122,6 +141,12 @@
       .header-btn, .refresh-btn {
         font-size: 1rem;
         padding: 14px 0;
+      }
+      .summary-card {
+        max-width: 98vw;
+        flex-direction: column;
+        font-size: 1rem;
+        padding: 15px 2vw;
       }
     }
   </style>
@@ -175,7 +200,7 @@
           </div>
           <button id="daily-refresh" class="refresh-btn">Refresh</button>
         </div>
-        <div id="daily-summary" class="summary"></div>
+        <div id="daily-summary"></div>
         <div id="daily-table"></div>
       `;
       document.getElementById('daily-refresh').onclick = fetchDailyReport;
@@ -194,7 +219,7 @@
     function renderDailyReportTable(data) {
       if (!data || data.length === 0) {
         document.getElementById('daily-table').innerHTML = 'No data available.';
-        document.getElementById('daily-summary').innerText = '';
+        document.getElementById('daily-summary').innerHTML = '';
         return;
       }
 
@@ -205,8 +230,13 @@
       });
       let totalRevenue = totalSales + totalTips;
 
-      document.getElementById('daily-summary').innerText =
-        `🧾 Orders: ${data.length} 💵 Total Sales: ${totalSales.toFixed(2)} 🎁 Total Tips: ${totalTips.toFixed(2)} 💰 Total Revenue: ${totalRevenue.toFixed(2)}`;
+      document.getElementById('daily-summary').innerHTML =
+        `<div class="summary-card">
+          <span>🧾 Orders: <b>${data.length}</b></span>
+          <span>💵 Total Sales: <b>${totalSales.toFixed(2)}</b></span>
+          <span>🎁 Total Tips: <b>${totalTips.toFixed(2)}</b></span>
+          <span>💰 Total Revenue: <b>${totalRevenue.toFixed(2)}</b></span>
+        </div>`;
 
       let html = `<table>
         <tr>
@@ -249,7 +279,7 @@
           </div>
           <button id="monthly-refresh" class="refresh-btn">Refresh</button>
         </div>
-        <div id="monthly-summary" class="summary"></div>
+        <div id="monthly-summary"></div>
         <div id="monthly-table"></div>
       `;
       document.getElementById('monthly-refresh').onclick = fetchMonthlyReport;
@@ -270,7 +300,7 @@
     function renderMonthlyReportTable(data) {
       if (!data || data.length === 0) {
         document.getElementById('monthly-table').innerHTML = 'No data available.';
-        document.getElementById('monthly-summary').innerText = '';
+        document.getElementById('monthly-summary').innerHTML = '';
         return;
       }
 
@@ -281,8 +311,13 @@
       });
       let totalRevenue = totalSales + totalTips;
 
-      document.getElementById('monthly-summary').innerText =
-        `🧾 Orders: ${data.length} 💵 Total Sales: ${totalSales.toFixed(2)} 🎁 Total Tips: ${totalTips.toFixed(2)} 💰 Total Revenue: ${totalRevenue.toFixed(2)}`;
+      document.getElementById('monthly-summary').innerHTML =
+        `<div class="summary-card">
+          <span>🧾 Orders: <b>${data.length}</b></span>
+          <span>💵 Total Sales: <b>${totalSales.toFixed(2)}</b></span>
+          <span>🎁 Total Tips: <b>${totalTips.toFixed(2)}</b></span>
+          <span>💰 Total Revenue: <b>${totalRevenue.toFixed(2)}</b></span>
+        </div>`;
 
       let html = `<table>
         <tr>
