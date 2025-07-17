@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Sales Report - ICRU</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -84,50 +83,6 @@
       justify-content: center;
       align-items: center;
     }
-    .summary-card {
-      margin: 0 auto 24px auto;
-      width: 100%;
-      max-width: 600px;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 4px 16px rgba(80, 0, 80, 0.12);
-      display: flex;
-      justify-content: space-evenly;
-      align-items: center;
-      padding: 22px 8px;
-      font-size: 1.16rem;
-      font-weight: 600;
-      gap: 0;
-      flex-wrap: wrap;
-      color: #4B2265;
-    }
-    .summary-card span {
-      display: flex;
-      align-items: center;
-      margin: 8px 10px;
-      gap: 5px;
-      font-size: 1.14rem;
-      white-space: nowrap;
-    }
-
-    .chart-container {
-      margin: 0 auto 30px auto;
-      max-width: 440px;
-      background: #fff;
-      padding: 18px 8px 2px 8px;
-      border-radius: 18px;
-      box-shadow: 0 2px 10px rgba(80, 0, 80, 0.06);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .chart-title {
-      font-size: 1.16rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      letter-spacing: 0.1px;
-      color: #4B2265;
-    }
     table {
       border-collapse: collapse;
       background: #fff;
@@ -151,9 +106,15 @@
     tr:hover {
       background: #e1bee7;
     }
+    .summary {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
     @media (max-width: 600px) {
       .report-main {
-        padding: 0 2vw;
+        padding: 0 4vw;
       }
       .center-title {
         font-size: 1.5rem;
@@ -161,12 +122,6 @@
       .header-btn, .refresh-btn {
         font-size: 1rem;
         padding: 14px 0;
-      }
-      .summary-card {
-        max-width: 98vw;
-        flex-direction: column;
-        font-size: 1rem;
-        padding: 15px 2vw;
       }
     }
   </style>
@@ -182,10 +137,8 @@
     <div id="report-content"></div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     let reportTab = 'daily';
-    let productPieChart = null; // Chart.js instance
 
     document.getElementById('tab-daily').onclick = () => switchReportTab('daily');
     document.getElementById('tab-monthly').onclick = () => switchReportTab('monthly');
@@ -212,7 +165,6 @@
       return `${hour}:${m} ${ampm}`;
     }
 
-    // ------ DAILY ---------
     async function renderDailyReport() {
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('report-content').innerHTML = `
@@ -223,8 +175,7 @@
           </div>
           <button id="daily-refresh" class="refresh-btn">Refresh</button>
         </div>
-        <div id="daily-summary-card"></div>
-        <div id="product-pie-container"></div>
+        <div id="daily-summary" class="summary"></div>
         <div id="daily-table"></div>
       `;
       document.getElementById('daily-refresh').onclick = fetchDailyReport;
@@ -235,19 +186,51 @@
     async function fetchDailyReport() {
       const date = document.getElementById('daily-date').value;
       document.getElementById('daily-table').innerHTML = 'Loading...';
-      const [reportRes, productsRes] = await Promise.all([
-        fetch(`/api/report/daily?date=${date}`),
-        fetch(`/api/report/daily/products?date=${date}`)
-      ]);
-      const [reportData, productsData] = await Promise.all([reportRes.json(), productsRes.json()]);
-      renderSummaryAndTable('daily', reportData, productsData);
+      const res = await fetch(`/api/report/daily?date=${date}`);
+      const data = await res.json();
+      renderDailyReportTable(data);
     }
 
-    // ------ MONTHLY ---------
+    function renderDailyReportTable(data) {
+      if (!data || data.length === 0) {
+        document.getElementById('daily-table').innerHTML = 'No data available.';
+        document.getElementById('daily-summary').innerText = '';
+        return;
+      }
+
+      let totalSales = 0, totalTips = 0;
+      data.forEach(row => {
+        totalSales += parseFloat(row.Total || 0);
+        totalTips += parseFloat(row.Tip || 0);
+      });
+      let totalRevenue = totalSales + totalTips;
+
+      document.getElementById('daily-summary').innerText =
+        `🧾 Orders: ${data.length} 💵 Total Sales: ${totalSales.toFixed(2)} 🎁 Total Tips: ${totalTips.toFixed(2)} 💰 Total Revenue: ${totalRevenue.toFixed(2)}`;
+
+      let html = `<table>
+        <tr>
+          <th>Order ID</th><th>Customer Ref</th><th>Time</th><th>Total</th><th>Tip</th><th>Payment Mode</th>
+        </tr>`;
+      data.forEach(row => {
+        html += `<tr>
+          <td>${row.OrderID}</td>
+          <td>${row.CustomerRef || ''}</td>
+          <td>${formatTime(row.Time)}</td>
+          <td>${row.Total || ''}</td>
+          <td>${row.Tip || ''}</td>
+          <td>${row.PaymentMode || ''}</td>
+        </tr>`;
+      });
+      html += `</table>`;
+      document.getElementById('daily-table').innerHTML = html;
+    }
+
     async function renderMonthlyReport() {
       const now = new Date();
       const month = now.getMonth() + 1;
       const year = now.getFullYear();
+
       document.getElementById('report-content').innerHTML = `
         <div class="center-controls">
           <div class="form-row">
@@ -266,8 +249,7 @@
           </div>
           <button id="monthly-refresh" class="refresh-btn">Refresh</button>
         </div>
-        <div id="monthly-summary-card"></div>
-        <div id="product-pie-container"></div>
+        <div id="monthly-summary" class="summary"></div>
         <div id="monthly-table"></div>
       `;
       document.getElementById('monthly-refresh').onclick = fetchMonthlyReport;
@@ -280,126 +262,47 @@
       const month = document.getElementById('monthly-month').value;
       const year = document.getElementById('monthly-year').value;
       document.getElementById('monthly-table').innerHTML = 'Loading...';
-      const [reportRes, productsRes] = await Promise.all([
-        fetch(`/api/report/monthly?month=${month}&year=${year}`),
-        fetch(`/api/report/monthly/products?month=${month}&year=${year}`)
-      ]);
-      const [reportData, productsData] = await Promise.all([reportRes.json(), productsRes.json()]);
-      renderSummaryAndTable('monthly', reportData, productsData);
+      const res = await fetch(`/api/report/monthly?month=${month}&year=${year}`);
+      const data = await res.json();
+      renderMonthlyReportTable(data);
     }
 
-    // --- Unified render for both tabs
-    function renderSummaryAndTable(type, data, products) {
-      // --- Summary Card
+    function renderMonthlyReportTable(data) {
+      if (!data || data.length === 0) {
+        document.getElementById('monthly-table').innerHTML = 'No data available.';
+        document.getElementById('monthly-summary').innerText = '';
+        return;
+      }
+
       let totalSales = 0, totalTips = 0;
       data.forEach(row => {
         totalSales += parseFloat(row.Total || 0);
         totalTips += parseFloat(row.Tip || 0);
       });
-      const totalRevenue = totalSales + totalTips;
-      const ordersCount = data.length;
-      const summaryHTML = `
-        <div class="summary-card">
-          <span>🧾 Orders: <b>${ordersCount}</b></span>
-          <span>💵 Total Sales: <b>${totalSales.toFixed(2)}</b></span>
-          <span>🎁 Total Tips: <b>${totalTips.toFixed(2)}</b></span>
-          <span>💰 Total Revenue: <b>${totalRevenue.toFixed(2)}</b></span>
-        </div>
-      `;
-      document.getElementById(type === "daily" ? 'daily-summary-card' : 'monthly-summary-card').innerHTML = summaryHTML;
+      let totalRevenue = totalSales + totalTips;
 
-      // --- Pie Chart Card: Products
-      renderProductPie(products);
+      document.getElementById('monthly-summary').innerText =
+        `🧾 Orders: ${data.length} 💵 Total Sales: ${totalSales.toFixed(2)} 🎁 Total Tips: ${totalTips.toFixed(2)} 💰 Total Revenue: ${totalRevenue.toFixed(2)}`;
 
-      // --- Data Table
-      let html = '';
-      if (!data || data.length === 0) {
-        html = 'No data available.';
-      } else {
-        if (type === 'daily') {
-          html = `<table>
-            <tr>
-              <th>Order ID</th><th>Customer Ref</th><th>Time</th><th>Total</th><th>Tip</th><th>Payment Mode</th>
-            </tr>`;
-          data.forEach(row => {
-            html += `<tr>
-              <td>${row.OrderID}</td>
-              <td>${row.CustomerRef || ''}</td>
-              <td>${formatTime(row.Time)}</td>
-              <td>${row.Total || ''}</td>
-              <td>${row.Tip || ''}</td>
-              <td>${row.PaymentMode || ''}</td>
-            </tr>`;
-          });
-        } else {
-          html = `<table>
-            <tr>
-              <th>Order ID</th><th>Customer Ref</th><th>Date</th><th>Time</th><th>Total</th><th>Tip</th><th>Payment Mode</th>
-            </tr>`;
-          data.forEach(row => {
-            html += `<tr>
-              <td>${row.OrderID}</td>
-              <td>${row.CustomerRef || ''}</td>
-              <td>${row.Date || ''}</td>
-              <td>${formatTime(row.Time)}</td>
-              <td>${row.Total || ''}</td>
-              <td>${row.Tip || ''}</td>
-              <td>${row.PaymentMode || ''}</td>
-            </tr>`;
-          });
-        }
-        html += `</table>`;
-      }
-      document.getElementById(type === "daily" ? 'daily-table' : 'monthly-table').innerHTML = html;
-    }
-
-    // --- PIE CHART CARD
-    function renderProductPie(products) {
-      const container = document.getElementById('product-pie-container');
-      // Guard: no data or API returns empty
-      if (!products || !Array.isArray(products) || products.length === 0) {
-        container.innerHTML = '';
-        if (productPieChart) { productPieChart.destroy(); productPieChart = null; }
-        return;
-      }
-      // If your /products endpoint returns array like:
-      // [ { ProductName: "Fettuccine Alfredo", Quantity: 3 }, ... ]
-      const labels = products.map(p => p.ProductName || p.name || "Unknown");
-      const data = products.map(p => parseInt(p.Quantity || p.quantity || 0));
-
-      container.innerHTML = `
-        <div class="chart-container">
-          <div class="chart-title">Products Sold (Pie Chart)</div>
-          <canvas id="productPieChart" width="400" height="260"></canvas>
-        </div>
-      `;
-
-      if (productPieChart) { productPieChart.destroy(); }
-      const ctx = document.getElementById('productPieChart').getContext('2d');
-      productPieChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: data,
-            backgroundColor: [
-              '#673ab7', '#ff9800', '#79c142', '#03a9f4', '#e91e63', '#8bc34a', '#ff5722', '#00bcd4', '#ffd600', '#c51162'
-            ],
-            borderWidth: 1.5,
-            borderColor: '#fff'
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: { enabled: true }
-          }
-        }
+      let html = `<table>
+        <tr>
+          <th>Order ID</th><th>Customer Ref</th><th>Date</th><th>Time</th><th>Total</th><th>Tip</th><th>Payment Mode</th>
+        </tr>`;
+      data.forEach(row => {
+        html += `<tr>
+          <td>${row.OrderID}</td>
+          <td>${row.CustomerRef || ''}</td>
+          <td>${row.Date || ''}</td>
+          <td>${formatTime(row.Time)}</td>
+          <td>${row.Total || ''}</td>
+          <td>${row.Tip || ''}</td>
+          <td>${row.PaymentMode || ''}</td>
+        </tr>`;
       });
+      html += `</table>`;
+      document.getElementById('monthly-table').innerHTML = html;
     }
 
-    // --- Initial tab
     switchReportTab('daily');
   </script>
 </body>
