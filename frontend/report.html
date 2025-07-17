@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Sales Report - ICRU</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -108,6 +109,24 @@
       font-size: 1.14rem;
       white-space: nowrap;
     }
+    .chart-container {
+      margin: 0 auto 24px auto;
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      padding: 18px 8px 2px 8px;
+      border-radius: 18px;
+      box-shadow: 0 2px 10px rgba(80, 0, 80, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .chart-title {
+      font-size: 1.12rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #4B2265;
+    }
     table {
       border-collapse: collapse;
       background: #fff;
@@ -164,6 +183,7 @@
 
   <script>
     let reportTab = 'daily';
+    let productPieChart = null; // Chart.js instance
 
     document.getElementById('tab-daily').onclick = () => switchReportTab('daily');
     document.getElementById('tab-monthly').onclick = () => switchReportTab('monthly');
@@ -190,6 +210,7 @@
       return `${hour}:${m} ${ampm}`;
     }
 
+    // ------ DAILY ---------
     async function renderDailyReport() {
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('report-content').innerHTML = `
@@ -201,6 +222,7 @@
           <button id="daily-refresh" class="refresh-btn">Refresh</button>
         </div>
         <div id="daily-summary"></div>
+        <div id="product-pie-container"></div>
         <div id="daily-table"></div>
       `;
       document.getElementById('daily-refresh').onclick = fetchDailyReport;
@@ -211,15 +233,20 @@
     async function fetchDailyReport() {
       const date = document.getElementById('daily-date').value;
       document.getElementById('daily-table').innerHTML = 'Loading...';
-      const res = await fetch(`/api/report/daily?date=${date}`);
-      const data = await res.json();
-      renderDailyReportTable(data);
+      const [res, res2] = await Promise.all([
+        fetch(`/api/report/daily?date=${date}`),
+        fetch(`/api/report/daily/products?date=${date}`)
+      ]);
+      const [data, productData] = await Promise.all([res.json(), res2.json()]);
+      renderDailyReportTable(data, productData);
     }
 
-    function renderDailyReportTable(data) {
+    function renderDailyReportTable(data, productData) {
       if (!data || data.length === 0) {
         document.getElementById('daily-table').innerHTML = 'No data available.';
         document.getElementById('daily-summary').innerHTML = '';
+        document.getElementById('product-pie-container').innerHTML = '';
+        if (productPieChart) productPieChart.destroy();
         return;
       }
 
@@ -237,6 +264,9 @@
           <span>🎁 Total Tips: <b>${totalTips.toFixed(2)}</b></span>
           <span>💰 Total Revenue: <b>${totalRevenue.toFixed(2)}</b></span>
         </div>`;
+
+      // ---- Pie chart here ----
+      renderProductPie(productData);
 
       let html = `<table>
         <tr>
@@ -256,6 +286,7 @@
       document.getElementById('daily-table').innerHTML = html;
     }
 
+    // ------ MONTHLY ---------
     async function renderMonthlyReport() {
       const now = new Date();
       const month = now.getMonth() + 1;
@@ -280,6 +311,7 @@
           <button id="monthly-refresh" class="refresh-btn">Refresh</button>
         </div>
         <div id="monthly-summary"></div>
+        <div id="product-pie-container"></div>
         <div id="monthly-table"></div>
       `;
       document.getElementById('monthly-refresh').onclick = fetchMonthlyReport;
@@ -292,15 +324,20 @@
       const month = document.getElementById('monthly-month').value;
       const year = document.getElementById('monthly-year').value;
       document.getElementById('monthly-table').innerHTML = 'Loading...';
-      const res = await fetch(`/api/report/monthly?month=${month}&year=${year}`);
-      const data = await res.json();
-      renderMonthlyReportTable(data);
+      const [res, res2] = await Promise.all([
+        fetch(`/api/report/monthly?month=${month}&year=${year}`),
+        fetch(`/api/report/monthly/products?month=${month}&year=${year}`)
+      ]);
+      const [data, productData] = await Promise.all([res.json(), res2.json()]);
+      renderMonthlyReportTable(data, productData);
     }
 
-    function renderMonthlyReportTable(data) {
+    function renderMonthlyReportTable(data, productData) {
       if (!data || data.length === 0) {
         document.getElementById('monthly-table').innerHTML = 'No data available.';
         document.getElementById('monthly-summary').innerHTML = '';
+        document.getElementById('product-pie-container').innerHTML = '';
+        if (productPieChart) productPieChart.destroy();
         return;
       }
 
@@ -319,6 +356,9 @@
           <span>💰 Total Revenue: <b>${totalRevenue.toFixed(2)}</b></span>
         </div>`;
 
+      // ---- Pie chart here ----
+      renderProductPie(productData);
+
       let html = `<table>
         <tr>
           <th>Order ID</th><th>Customer Ref</th><th>Date</th><th>Time</th><th>Total</th><th>Tip</th><th>Payment Mode</th>
@@ -336,6 +376,48 @@
       });
       html += `</table>`;
       document.getElementById('monthly-table').innerHTML = html;
+    }
+
+    // --- PIE CHART ---
+    function renderProductPie(productData) {
+      const container = document.getElementById('product-pie-container');
+      if (!productData || !Array.isArray(productData) || productData.length === 0) {
+        container.innerHTML = '';
+        if (productPieChart) productPieChart.destroy();
+        return;
+      }
+      const labels = productData.map(p => p.ProductName || p.name || "Unknown");
+      const values = productData.map(p => parseInt(p.Quantity || p.quantity || 0));
+      container.innerHTML = `
+        <div class="chart-container">
+          <div class="chart-title">Products Sold (Pie Chart)</div>
+          <canvas id="productPieChart" width="400" height="260"></canvas>
+        </div>
+      `;
+      if (productPieChart) productPieChart.destroy();
+      const ctx = document.getElementById('productPieChart').getContext('2d');
+      productPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: [
+              '#673ab7', '#ff9800', '#79c142', '#03a9f4', '#e91e63',
+              '#8bc34a', '#ff5722', '#00bcd4', '#ffd600', '#c51162', '#00c853'
+            ],
+            borderWidth: 1.5,
+            borderColor: '#fff'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: { enabled: true }
+          }
+        }
+      });
     }
 
     switchReportTab('daily');
